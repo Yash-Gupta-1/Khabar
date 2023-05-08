@@ -1,6 +1,7 @@
 import axios from 'axios'
 import { apiUrl } from './constants/Utils'
 
+
 let authAxios = axios.create({
     baseURL: apiUrl
 })

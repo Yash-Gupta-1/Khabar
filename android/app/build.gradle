@@ -80,6 +80,7 @@ import org.apache.tools.ant.taskdefs.condition.Os
 
 project.ext.react = [
     enableHermes: true,  // clean and rebuild if changing
+    bundleInRelease: false
 ]
 
 apply from: "../../node_modules/react-native/react.gradle"
@@ -211,10 +212,10 @@ android {
         }
     }
 
-    dexOptions {
-    incremental true
-    javaMaxHeapSize "4g"
-    }
+    // dexOptions {
+    // incremental true
+    // javaMaxHeapSize "4g"
+    // }
 
     signingConfigs {
         debug {

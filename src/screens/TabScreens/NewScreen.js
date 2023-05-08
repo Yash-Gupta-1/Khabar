@@ -1,4 +1,4 @@
-import { View, Text, FlatList, TouchableOpacity, StyleSheet, Dimensions, Image, ActivityIndicator, RefreshControl } from 'react-native'
+import { View, Text, FlatList, TouchableOpacity, StyleSheet, Dimensions, Image, ActivityIndicator, RefreshControl, Linking } from 'react-native'
 import React, { useCallback, useEffect, useState } from 'react'
 import request from '../../request';
 import moment from 'moment';
@@ -6,11 +6,13 @@ const width = Dimensions.get('window').width;
 
 
 const NewScreen = () => {
+    // States to store the data of the posts and a state to handle the loading
     const [state, setState] = useState({
         data: [],
         loading: false,
     })
 
+    // Fetching the post data 
     const fetchPostsData = async () => {
         setState(() => ({
             loading: true
@@ -29,6 +31,7 @@ const NewScreen = () => {
 
     };
 
+    // For Pull refresh feature
     const onRefresh = useCallback(() => {
         fetchPostsData();
     }, []);
@@ -37,8 +40,13 @@ const NewScreen = () => {
     useEffect(() => {
         fetchPostsData()
     }, [])
+
+    // For list card UI
     const renderItem = ({ item }) => (
-        <TouchableOpacity style={styles.card}>
+        <TouchableOpacity style={styles.card} onPress={() => {
+            // For the Web view after click on the post 
+            Linking.openURL(item?.data?.url_overridden_by_dest);
+        }}>
             <View style={{ width: '28%', }}>
                 <Image
                     source={{
@@ -49,7 +57,7 @@ const NewScreen = () => {
                 />
             </View>
             <View style={{ width: '28%', }}>
-            <View style={{ flexDirection: 'row', justifyContent: 'space-between', width: width / 1.5 }}>
+                <View style={{ flexDirection: 'row', justifyContent: 'space-between', width: width / 1.5 }}>
                     <Text></Text>
                     <Text style={{ color: 'black', fontSize: 12 }}> {moment(item?.data?.created_utc).startOf('hour').fromNow()}</Text>
                 </View>
@@ -68,14 +76,14 @@ const NewScreen = () => {
 
 
     return (
-        <View style={{}}>
+        <View style={{ flex: 1 }}>
             {
                 state?.loading ? (
-                    <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+                    <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', height: '100%' }}>
                         <ActivityIndicator size="large" color={'black'} />
                     </View>
                 ) : (
-
+                    // Flatlist to show the list of the post
                     state?.data && (
                         <FlatList
                             data={state?.data?.children}
@@ -106,7 +114,7 @@ const styles = StyleSheet.create({
         marginVertical: 7,
         display: 'flex',
         flexDirection: 'row',
-        alignItems: 'flex-start',
+        alignItems: 'center',
         elevation: 2,
         padding: 15,
 
